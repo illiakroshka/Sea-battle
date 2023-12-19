@@ -1,0 +1,16 @@
+C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\bin\Debug\net6.0-windows\Sea battle.exe
+C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\bin\Debug\net6.0-windows\Sea battle.deps.json
+C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\bin\Debug\net6.0-windows\Sea battle.runtimeconfig.json
+C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\bin\Debug\net6.0-windows\Sea battle.dll
+C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\bin\Debug\net6.0-windows\Sea battle.pdb
+C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\obj\Debug\net6.0-windows\Sea_battle.Form1.resources
+C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\obj\Debug\net6.0-windows\Sea battle.csproj.GenerateResource.cache
+C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\obj\Debug\net6.0-windows\Sea battle.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\obj\Debug\net6.0-windows\Sea battle.AssemblyInfoInputs.cache
+C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\obj\Debug\net6.0-windows\Sea battle.AssemblyInfo.cs
+C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\obj\Debug\net6.0-windows\Sea battle.csproj.CoreCompileInputs.cache
+C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\obj\Debug\net6.0-windows\Sea battle.dll
+C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\obj\Debug\net6.0-windows\refint\Sea battle.dll
+C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\obj\Debug\net6.0-windows\Sea battle.pdb
+C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\obj\Debug\net6.0-windows\Sea battle.genruntimeconfig.cache
+C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\obj\Debug\net6.0-windows\ref\Sea battle.dll
