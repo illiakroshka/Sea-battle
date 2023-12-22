@@ -12,7 +12,7 @@ namespace Sea_battle
             secondMap = Map.createMapArray(mapSize);
             createMaps();
         }
-        private const int mapSize = 10;
+        private const int mapSize = 11;
         private int cellSize = 30;
         private int[,] firstMap;
         private int[,] secondMap;
