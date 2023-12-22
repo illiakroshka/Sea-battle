@@ -32,10 +32,12 @@ namespace Sea_battle
             bool hit = false;
 
             int delta = 0;
-            if (pressedButton.Location.X > 320)
+            if (pressedButton.Location.X > 350)
             {
-                delta = 320;
+                delta = 350;
             }
+            double first = pressedButton.Location.Y / cellSize;
+            double second = (pressedButton.Location.X - delta) / cellSize;
             if (map[pressedButton.Location.Y / cellSize, (pressedButton.Location.X - delta)/ cellSize] != 0)
             {
                 hit = true;
@@ -55,6 +57,8 @@ namespace Sea_battle
         {
             Button pressedButton = sender as Button;
             pressedButton.BackColor = Color.Red;
+            int first = pressedButton.Location.Y / cellSize;
+            int second = pressedButton.Location.X / cellSize;
             
             if (map[pressedButton.Location.Y / cellSize, pressedButton.Location.X / cellSize] == 0)
             {
