@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.AxHost;
 
 namespace Sea_battle
 {
@@ -17,539 +18,177 @@ namespace Sea_battle
             return Map;
         }
 
-        public void sayHello()
-        {
-
-        }
-
         public static int[,] generateShips(int[,] map, int cellSize, int delta, Control.ControlCollection control)
         {
-            int[,] shipMap = generate4DeckShip(map);
-            int[,] shipMap2 = generate3DecksShip(shipMap);
-            int[,] shipMap3 = generate3DecksShip(shipMap2);
-            int[,] shipMap4 = generate2DescksSpip(shipMap3);
-            int[,] shipMap5 = generate2DescksSpip(shipMap4);
-            int[,] shipMap6 = generate2DescksSpip(shipMap5);
-            int[,] shipMap7 = generate1DeckShip(shipMap6);
-            int[,] shipMap8 = generate1DeckShip(shipMap7);
-            int[,] shipMap9 = generate1DeckShip(shipMap8);
-            int[,] shipMap10 = generate1DeckShip(shipMap9);
+            int[,] shipMap = generateDecksShip(map,4,1);
+            shipMap = generateDecksShip(shipMap,3,2);
+            shipMap = generateDecksShip(shipMap, 2,3);
+            shipMap = generateDecksShip(shipMap, 1,4);
 
-            DisplayShips(shipMap10, cellSize, control, delta);
+            DisplayShips(shipMap, cellSize, control, delta);
             return shipMap;
         }
 
-        public static int[,] generate1DeckShip(int[,] map)
+        public static int[,] generateDecksShip(int[,] map, int decks, int amount)
         {
             Random random = new Random();
-            int startX = random.Next(1, 11);
-            int startY = random.Next(1, 11);
-            int decks = 2;
+            int startX;
+            int startY;
             int row = 1;
-            bool isFree = false;
-            bool isValidated = false; 
+            bool isDrown = false;
+            int counter = 0;
+            GetRandomFreePosition(map,random,out startX, out startY);
 
-            while (isFree == false)
+            while (isDrown == false)
             {
-                if (map[startX, startY] == 0)
+                map = CheckAndPlaceShip(map, startX, startY, decks, row, out isDrown);
+
+                if (isDrown)
                 {
-                    isFree = true;
+                    bool isValid = Validate(map);
+                    if (isValid)
+                    {
+                        map = ReplaceThreesWithOnes(map);
+                        map = Transform(map);
+                        counter++;
+                        if (counter != amount)
+                        {
+                            isDrown = false;
+                        }
+                    }
+                    else
+                    {
+                        isDrown = false;
+                    }
+                }
+                GetRandomFreePosition(map, random,out startX, out startY);
+            }
+            return map;
+        }
+
+        public static int[,] GenerateShipByX(int[,] map, int startX, int startY, int row, int decks, int step)
+        {
+            for (int i = 0; i < row; i++)
+            {
+                for (int j = 0; j < decks; j++)
+                {
                     map[startX, startY] = 3;
-                    isValidated = Validate(map);
-                    if (isValidated ==  false)
-                    {
-                        isFree = false;
-                    }
-                    else
-                    {
-                        map = ReplaceThreesWithOnes(map);
-                        map = Transform(map);
-                    }
-                }
-                else
-                {
-                    startX = random.Next(1, 11);
-                    startY = random.Next(1, 11);
+                    startX = startX + step;
                 }
             }
-            return map; 
+            return map;
         }
 
-        public static int[,] generate2DescksSpip(int[,] map)
-        {
-            Random random = new Random();
-            int startX = random.Next(1, 11);
-            int startY = random.Next(1, 11);
-            int decks = 2;
-            int row = 1;
-            bool isDrown = false;
-            bool isFree = false;
 
-            while (isFree == false)
+        public static int[,] GenerateShipByY(int[,] map, int startX, int startY, int row, int decks, int step)
+        {
+            for (int i = 0; i < row; i++)
+            {
+                for (int j = 0; j < decks; j++)
+                {
+                    map[startX, startY] = 3;
+                    startY = startY + step;
+                }
+            }
+            return map;
+        }
+
+        public static void GetRandomFreePosition(int[,] map,Random random, out int x, out int y)
+        {
+            do
+            {
+                x = random.Next(1, 11);
+                y = random.Next(1, 11);
+            } while (map[x, y] != 0);
+        }
+
+        private static bool CheckAndPlaceShipDirectionX(int[,] map, int startX, int startY, int decks, int step)
+        {
+            bool isAble = true;
+
+            for (int i = 0; i < decks; i++)
             {
                 if (map[startX, startY] == 0)
                 {
-                    isFree = true;
+                    isAble = true;
                 }
                 else
                 {
-                    startX = random.Next(1, 11);
-                    startY = random.Next(1, 11);
+                    isAble = false;
+                    break;
                 }
+                startX += step;
             }
-
-            while (isDrown == false)
-            {
-                if (startX - decks > 0)
-                {
-                    bool isAble = false;
-                    for (int i = 0; i < row; i++)
-                    {
-                        int start = startX;
-                        for (int j = 0; j < decks; j++)
-                        {
-                            if (map[start, startY] == 0)
-                            {
-                                isAble = true;
-                            }
-                            else
-                            {
-                                isAble = false;
-                                isFree = false;
-                                break;
-                            }
-                            start = start - row;
-                        }
-                    }
-                    if (isAble)
-                    {
-                        isDrown = true;
-                        for (int i = 0; i < row; i++)
-                        {
-                            for (int j = 0; j < decks; j++)
-                            {
-                                if (map[startX, startY] == 0)
-                                {
-                                    map[startX, startY] = 3;
-                                    startX = startX - row;
-                                }
-                            }
-                        }
-                    }
-                }
-                else if (startX + decks < 9)
-                {
-                    bool isAble = false;
-                    for (int i = 0; i < row; i++)
-                    {
-                        int start = startX;
-                        for (int j = 0; j < decks; j++)
-                        {
-                            if (map[start, startY] == 0)
-                            {
-                                isAble = true;
-                            }
-                            else
-                            {
-                                isAble = false;
-                                isFree = false;
-                                break;
-                            }
-                            start = start + row;
-                        }
-                    }
-                    if (isAble)
-                    {
-                        isDrown = true;
-                        for (int i = 0; i < row; i++)
-                        {
-                            for (int j = 0; j < decks; j++)
-                            {
-                                if (map[startX, startY] == 0)
-                                {
-                                    map[startX, startY] = 3;
-                                    startX = startX + row;
-                                }
-                            }
-                        }
-                    }
-                }
-
-
-                else if (startY - decks > 0)
-                {
-                    bool isAble = false;
-
-                    for (int i = 0; i < row; i++)
-                    {
-                        int start = startY;
-                        for (int j = 0; j < decks; j++)
-                        {
-                            if (map[startX, start] == 0)
-                            {
-                                isAble = true;
-                            }
-                            else
-                            {
-                                isAble = false;
-                                isFree = false;
-                                break;
-                            }
-                            start = start - row;
-                        }
-                    }
-                    if (isAble)
-                    {
-                        isDrown = true;
-                        for (int i = 0; i < row; i++)
-                        {
-                            for (int j = 0; j < decks; j++)
-                            {
-                                if (map[startX, startY] == 0)
-                                {
-                                    map[startX, startY] = 3;
-                                    startY = startY - row;
-                                }
-                            }
-                        }
-                    }
-                }
-                else if (startY + decks < 9)
-                {
-                    bool isAble = false;
-                    for (int i = 0; i < row; i++)
-                    {
-                        int start = startY;
-                        for (int j = 0; j < decks; j++)
-                        {
-                            if (map[startX, start] == 0)
-                            {
-                                isAble = true;
-                            }
-                            else
-                            {
-                                isAble = false;
-                                isFree = false;
-                                break;
-                            }
-                            start = start + row;
-                        }
-                    }
-                    if (isAble)
-                    {
-                        isDrown = true;
-                        for (int i = 0; i < row; i++)
-                        {
-                            for (int j = 0; j < decks; j++)
-                            {
-                                if (map[startX, startY] == 0)
-                                {
-                                    map[startX, startY] = 3;
-                                    startY = startY + row;
-                                }
-                            }
-                        }
-                    }
-
-                }
-
-                if (isDrown)
-                {
-                    bool isValid = Validate(map);
-                    if (isValid)
-                    {
-                        map = ReplaceThreesWithOnes(map);
-                        map = Transform(map);
-                    }
-                    else
-                    {
-                        isDrown = false;
-                        isFree = false;
-                    }
-                }
-
-                while (isFree == false)
-                {
-                    startX = random.Next(1, 11);
-                    startY = random.Next(1, 11);
-
-                    if (map[startX, startY] != 1)
-                    {
-                        isFree = true;
-                    }
-                }
-            }
-            return map;
+            return isAble;
         }
 
-        public static int[,] generate3DecksShip(int[,] map)
+        private static bool CheckAndPlaceShipDirectionY(int[,] map, int startX, int startY, int decks, int step)
         {
-            Random random = new Random();
-            int startX = random.Next(1, 11);
-            int startY = random.Next(1, 11);
-            int decks = 3;
-            int row = 1;
-            bool isDrown = false;
-            bool isFree = false;
+            bool isAble = true;
 
-            while(isFree == false)
+            for (int i = 0; i < decks; i++)
             {
-                if (map[startX,startY] == 0)
+                if (map[startX, startY] == 0)
                 {
-                    isFree = true;
+                    isAble = true;
                 }
                 else
                 {
-                    startX = random.Next(1, 11);
-                    startY = random.Next(1, 11);
+                    isAble = false;
+                    break;
                 }
+                startY += step;
             }
-
-            while (isDrown == false)
-            {
-                if (startX - decks > 0)
-                {
-                    bool isAble = false;
-                    for (int i = 0; i < row; i++)
-                    {
-                        int start = startX;
-                        for (int j = 0; j < decks; j++)
-                        {
-                            if (map[start, startY] == 0)
-                            {
-                                isAble = true;
-                            }
-                            else
-                            {
-                                isAble = false;
-                                isFree = false;
-                                break;
-                            }
-                            start = start - row;
-                        }
-                    }
-                    if (isAble)
-                    {
-                        isDrown = true;
-                        for (int i = 0; i < row; i++)
-                        {
-                            for (int j = 0; j < decks; j++)
-                            {
-                                if (map[startX, startY] == 0)
-                                {
-                                    map[startX, startY] = 3;
-                                    startX = startX - row;
-                                }
-                            }
-                        }
-                    }
-                }
-                else if (startX + decks < 9)
-                {
-                    bool isAble = false;
-                    for (int i = 0; i < row; i++)
-                    {
-                        int start = startX; 
-                        for (int j = 0; j < decks; j++)
-                        {
-                            if (map[start, startY] == 0)
-                            {
-                                isAble = true;
-                            }
-                            else
-                            {
-                                isAble = false;
-                                isFree = false;
-                                break;
-                            }
-                            start = start + row;
-                        }
-                    }
-                    if (isAble)
-                    {
-                        isDrown = true;
-                        for (int i = 0; i < row; i++)
-                        {
-                            for (int j = 0; j < decks; j++)
-                            {
-                                if (map[startX, startY] == 0)
-                                {
-                                    map[startX, startY] = 3;
-                                    startX = startX + row;
-                                }
-                            }
-                        }
-                    }
-                }
-
-
-                else if (startY - decks > 0)
-                {
-                    bool isAble = false;
-
-                    for (int i = 0; i < row; i++)
-                    {
-                        int start = startY;
-                        for (int j = 0; j < decks; j++)
-                        {
-                            if (map[startX, start] == 0)
-                            {
-                                isAble = true;
-                            }
-                            else
-                            {
-                                isAble = false;
-                                isFree = false;
-                                break;
-                            }
-                            start = start - row;
-                        }
-                    }
-                    if (isAble)
-                    {
-                        isDrown = true;
-                        for (int i = 0; i < row; i++)
-                        {
-                            for (int j = 0; j < decks; j++)
-                            {
-                                if (map[startX, startY] == 0)
-                                {
-                                    map[startX, startY] = 3;
-                                    startY = startY - row;
-                                }
-                            }
-                        }
-                    }
-                }
-                else if (startY + decks < 9)
-                {
-                    bool isAble = false;
-                    for (int i = 0; i < row; i++)
-                    {
-                        int start = startY;
-                        for (int j = 0; j < decks; j++)
-                        {
-                            if (map[startX, start] == 0)
-                            {
-                                isAble = true;
-                            }
-                            else
-                            {
-                                isAble = false;
-                                isFree = false;
-                                break;
-                            }
-                            start = start + row;
-                        }
-                    }
-                    if (isAble)
-                    {
-                        isDrown = true;
-                        for (int i = 0; i < row; i++)
-                        {
-                            for (int j = 0; j < decks; j++)
-                            {
-                                if (map[startX, startY] == 0)
-                                {
-                                    map[startX, startY] = 3;
-                                    startY = startY + row;
-                                }
-                            }
-                        }
-                    }
-
-                }
-
-                if (isDrown)
-                {
-                    bool isValid = Validate(map);
-                    if (isValid)
-                    {
-                        map = ReplaceThreesWithOnes(map);
-                        map = Transform(map);
-                    }
-                    else
-                    {
-                        isDrown = false;
-                        isFree = false;
-                    }
-                }
-
-                while (isFree == false)
-                {
-                    startX = random.Next(1, 11);
-                    startY = random.Next(1, 11); 
-
-                    if (map[startX, startY] != 1)
-                    {
-                        isFree = true;
-                    }
-                }
-            }
-            return map;
+            return isAble;
         }
 
-        public static int[,] generate4DeckShip(int[,] map)
+        public static int[,] CheckAndPlaceShip(int[,] map, int startX, int startY, int decks, int row, out bool isDrown)
         {
+            isDrown = false;
             Random random = new Random();
-            int startX = random.Next(1, 11);
-            int startY = random.Next(1, 11);
             int direction = random.Next(0, 2);
-            int decks = 4;
-            int row = 1;
-
             if (direction == 0)
             {
-                if (startX - 4 > 0)
+                if (startX - decks > 0)
                 {
-                    for (int i = 0; i < row; i++)
+                    bool isAble = CheckAndPlaceShipDirectionX(map, startX, startY, decks, -row);
+                    if (isAble)
                     {
-                        for (int j = 0; j < decks; j++)
-                        {
-                            map[startX, startY] = 1;
-                            startX = startX - row;
-                        }
+                        isDrown = true;
+                        map = GenerateShipByX(map, startX, startY, row, decks, -row);
                     }
                 }
-                else if (startX + 4 < 9)
+                else if (startX + decks < 9)
                 {
-                    for (int i = 0; i < row; i++)
+                    bool isAble = CheckAndPlaceShipDirectionX(map, startX, startY, decks, row);
+                    if (isAble)
                     {
-                        for (int j = 0; j < decks; j++)
-                        {
-                            map[startX, startY] = 1;
-                            startX = startX + row;
-                        }
+                        isDrown = true;
+                        map = GenerateShipByX(map, startX, startY, row, decks, row);
                     }
                 }
             }
             if (direction == 1)
             {
-                if (startY - 4 > 0)
+                if (startY - decks > 0)
                 {
-                    for (int i = 0; i < row; i++)
+                    bool isAble = CheckAndPlaceShipDirectionY(map, startX, startY, decks, -row);
+                    if (isAble)
                     {
-                        for (int j = 0; j < decks; j++)
-                        {
-                            map[startX, startY] = 1;
-                            startY = startY - row;
-                        }
+                        isDrown = true;
+                        map = GenerateShipByY(map, startX, startY, row, decks, -row);
                     }
-
                 }
-                else if (startY + 4 < 9)
+                else if (startY + decks < 9)
                 {
-                    for (int i = 0; i < row; i++)
+                    bool isAble = CheckAndPlaceShipDirectionY(map, startX, startY, decks, row);
+                    if (isAble)
                     {
-                        for (int j = 0; j < decks; j++)
-                        {
-                            map[startX, startY] = 1;
-                            startY = startY + row;
-                        }
+                        isDrown = true;
+                        map = GenerateShipByY(map, startX, startY, row, decks, row);
                     }
                 }
             }
-            map = Transform(map);
             return map;
         }
 
@@ -592,7 +231,6 @@ namespace Sea_battle
                 {
                     if (map[i, j] == 1)
                     {
-                        // Расставляем двойки вокруг единицы
                         for (int x = i - 1; x <= i + 1; x++)
                         {
                             for (int y = j - 1; y <= j + 1; y++)
@@ -620,49 +258,20 @@ namespace Sea_battle
                 {
                     if (map[i, j] == 3)
                     {
-                        // Проверяем вокруг тройки
                         for (int x = i - 1; x <= i + 1; x++)
                         {
                             for (int y = j - 1; y <= j + 1; y++)
                             {
                                 if (x >= 0 && x < rows && y >= 0 && y < cols && map[x, y] == 1)
                                 {
-                                    return false; // Вокруг тройки есть двойка
+                                    return false;
                                 }
                             }
                         }
                     }
                 }
             }
-
             return true;
-        }
-
-
-        static bool CheckNoTwosBesideThrees(int[,] array)
-        {
-            int rows = array.GetLength(0);
-            int cols = array.GetLength(1);
-
-            for (int i = 0; i < rows; i++)
-            {
-                for (int j = 0; j < cols; j++)
-                {
-                    if (array[i, j] == 3)
-                    {
-                        // Проверяем слева, справа, сверху и снизу от тройки
-                        if ((i > 0 && array[i - 1, j] == 2) ||  // Сверху
-                            (i < rows - 1 && array[i + 1, j] == 2) ||  // Снизу
-                            (j > 0 && array[i, j - 1] == 2) ||  // Слева
-                            (j < cols - 1 && array[i, j + 1] == 2))  // Справа
-                        {
-                            return false; // Есть двойка побокам от тройки
-                        }
-                    }
-                }
-            }
-
-            return true; // Нет двоек побокам от всех троек
         }
 
         static int[,] ReplaceThreesWithOnes(int[,] array)
@@ -676,11 +285,10 @@ namespace Sea_battle
                 {
                     if (array[i, j] == 3)
                     {
-                        array[i, j] = 1; // Заменяем тройку на единицу
+                        array[i, j] = 1;
                     }
                 }
             }
-
             return array;
         }
 
