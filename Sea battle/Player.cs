@@ -44,10 +44,5 @@ namespace Sea_battle
             isPlayerTurn = hit;
             return hit;
         }
-
-        public void ReloadWeapon()
-        {
-            canShoot = true;
-        }
     }
 }

@@ -15,13 +15,11 @@ namespace Sea_battle
         public SecondUserForm()
         {
             InitializeComponent();
-            secondPlayer = new Player(false);
         }
-        Player secondPlayer;
 
         public void ShowMaps(int[,] userMap, int[,] enemyMap, int mapSize, int cellSize, Player player, Player enemyPLayer)
         {
-            Map.DisplayMaps(mapSize, cellSize, userMap, enemyMap, this.Controls, player, enemyPLayer);
+            Map.Display(mapSize, cellSize, userMap, enemyMap, this.Controls, player, enemyPLayer);
         }
     }
 }
