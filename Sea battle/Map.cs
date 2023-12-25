@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using static System.Windows.Forms.AxHost;
 
 namespace Sea_battle
@@ -201,8 +202,8 @@ namespace Sea_battle
                 {
                     if (map[i,j] == 1)
                     {
-                        int buttonLicationX = i * cellSize;
-                        int buttonLicationY = j * cellSize;
+                        int buttonLicationX = j * cellSize;
+                        int buttonLicationY = i * cellSize;
                         DrawButton(control, new Point(buttonLicationX + delta, buttonLicationY));
                     }
                 }
@@ -292,10 +293,21 @@ namespace Sea_battle
             return array;
         }
 
-        private static void PlayerShoot(object sender, EventArgs e, int[,] enemyMap)
+        private static void PlayerShoot(object sender, EventArgs e, int[,] enemyMap, Player firstPlayer, Player secondPlayer)
         {
             Button pressedButton = sender as Button;
-            Shoot(enemyMap, 30, pressedButton);
+            if (firstPlayer.canShoot && firstPlayer.isPlayerTurn)
+            {
+               bool hit = firstPlayer.Shoot(enemyMap, 30, pressedButton);
+
+                if (!hit)
+                {
+                    firstPlayer.isPlayerTurn = false;
+                    secondPlayer.isPlayerTurn = true;
+                    secondPlayer.canShoot = true;
+                }
+            }
+
         }
 
         private static bool Shoot(int[,] map,int cellSize ,Button pressedButton)
@@ -307,9 +319,7 @@ namespace Sea_battle
             {
                 delta = 350;
             }
-            double first = pressedButton.Location.Y / cellSize;
-            double second = (pressedButton.Location.X - delta) / cellSize;
-            if (map[pressedButton.Location.Y / cellSize, (pressedButton.Location.X - delta)/ cellSize] != 0)
+            if (map[pressedButton.Location.Y / cellSize, (pressedButton.Location.X - delta)/ cellSize] == 1)
             {
                 hit = true;
                 pressedButton.BackColor = Color.Blue;
@@ -318,7 +328,6 @@ namespace Sea_battle
             else
             {
                 hit = false;
-
                 pressedButton.BackColor = Color.Black;
             }
             return hit;
@@ -341,6 +350,70 @@ namespace Sea_battle
                 pressedButton.BackColor = Color.White;
                 map[pressedButton.Location.Y / cellSize, pressedButton.Location.X / cellSize] = 0;
             }
+        }
+
+        public static void DisplayMaps(int mapSize, int cellSize,int[,] userMap, int[,]enemyMap, Control.ControlCollection control, Player firstPlayer, Player enemyPlayer)
+        {
+            string alphabet = "ABCDEFGHIJ";
+            int[] numbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            int value = numbers[9];
+
+            for (int i = 0; i < mapSize; i++)
+            {
+                for (int j = 0; j < mapSize; j++)
+                {
+                    Button button = new Button();
+                    button.Location = new Point(j * cellSize, i * cellSize);
+                    button.Size = new Size(cellSize, cellSize);
+                    button.BackColor = Color.White;
+                    if (i == 0 || j == 0)
+                    {
+                        button.BackColor = Color.Gray;
+                        if (i == 0 && j > 0)
+                        {
+                            button.Text = alphabet[j - 1].ToString();
+                        }
+                        if (j == 0 && i > 0)
+                        {
+                            button.Text = numbers[i - 1].ToString();
+                        }
+                    }
+                    else
+                    {
+                        //button.Click += new EventHandler((sender, e) => ConfigureShips(sender, e, userMap, cellSize));
+                    }
+                    control.Add(button);
+                }
+            }
+
+            for (int i = 0; i < mapSize; i++)
+            {
+                for (int j = 0; j < mapSize; j++)
+                {
+                    Button button = new Button();
+                    button.Location = new Point(350 + j * cellSize, i * cellSize);
+                    button.Size = new Size(cellSize, cellSize);
+                    button.BackColor = Color.White;
+                    if (i == 0 || j == 0)
+                    {
+                        button.BackColor = Color.Gray;
+                        if (i == 0 && j > 0)
+                        {
+                            button.Text = alphabet[j - 1].ToString();
+                        }
+                        if (j == 0 && i > 0)
+                        {
+                            button.Text = numbers[i - 1].ToString();
+                        }
+                    }
+                    else
+                    {
+                        button.Click += new EventHandler((sender, e) => PlayerShoot(sender, e, enemyMap, firstPlayer, enemyPlayer));
+                    }
+                    control.Add(button);
+                }
+            }
+            DisplayShips(userMap, cellSize,control,0);
         }
 
         public static void createMaps(int mapSize,int cellSize, int[,] firstMap, int[,] secondMap, Control.ControlCollection control)
@@ -401,7 +474,7 @@ namespace Sea_battle
                     }
                     else
                     {
-                        button.Click += new EventHandler((sender, e) => PlayerShoot(sender, e, secondMap));
+                       // button.Click += new EventHandler((sender, e) => PlayerShoot(sender, e, secondMap));
                     }
                     control.Add(button);
                 }

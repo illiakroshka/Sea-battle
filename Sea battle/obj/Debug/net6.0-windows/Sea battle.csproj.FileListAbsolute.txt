@@ -14,3 +14,5 @@ C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea
 C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\obj\Debug\net6.0-windows\Sea battle.pdb
 C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\obj\Debug\net6.0-windows\Sea battle.genruntimeconfig.cache
 C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\obj\Debug\net6.0-windows\ref\Sea battle.dll
+C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\obj\Debug\net6.0-windows\Sea_battle.FirstUserForm.resources
+C:\Users\Admin\Desktop\University\2 Семестр\OOP\Sea battle\Sea battle\Sea battle\obj\Debug\net6.0-windows\Sea_battle.SecondUserForm.resources
