@@ -21,10 +21,5 @@ namespace Sea_battle
         {
             Map.Display(mapSize, cellSize, userMap, enemyMap, this.Controls, player, enemyPlayer, label2);
         }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

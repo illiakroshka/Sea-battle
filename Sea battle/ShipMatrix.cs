@@ -8,6 +8,13 @@ namespace Sea_battle
 {
     internal class ShipMatrix
     {
+        public static readonly int shipIndex = 1;
+        public static readonly int cornerShipIndex = 2;
+        public static readonly int testShipIndex = 3;
+        public static readonly int destroyedShipCornerIndex = 4;
+        public static readonly int technicalFieldIndex = 5;
+
+
         public static int[,] CheckAndPlaceShip(int[,] map, int startX, int startY, int decks, int row, out bool isDrown)
         {
             isDrown = false;
@@ -82,9 +89,9 @@ namespace Sea_battle
                         {
                             for (int y = j - 1; y <= j + 1; y++)
                             {
-                                if (x >= 0 && x < rows && y >= 0 && y < cols && map[x, y] != 1 && map[x, y] != 5)
+                                if (x >= 0 && x < rows && y >= 0 && y < cols && map[x, y] != shipIndex && map[x, y] != technicalFieldIndex)
                                 {
-                                    map[x, y] = 2;                               
+                                    map[x, y] = cornerShipIndex;                               
                                 }
                             }
                         }
@@ -109,9 +116,9 @@ namespace Sea_battle
                         {
                             for (int y = j - 1; y <= j + 1; y++)
                             {
-                                if (x >= 0 && x < rows && y >= 0 && y < cols && map[x, y] == 2)
+                                if (x >= 0 && x < rows && y >= 0 && y < cols && map[x, y] == cornerShipIndex)
                                 {
-                                    map[x, y] = 4;
+                                    map[x, y] = destroyedShipCornerIndex;
                                 }
                             }
                         }
@@ -136,7 +143,7 @@ namespace Sea_battle
                         {
                             for (int y = j - 1; y <= j + 1; y++)
                             {
-                                if (x >= 0 && x < rows && y >= 0 && y < cols && map[x, y] == 1)
+                                if (x >= 0 && x < rows && y >= 0 && y < cols && map[x, y] == shipIndex)
                                 {
                                     return false;
                                 }
@@ -157,9 +164,9 @@ namespace Sea_battle
             {
                 for (int j = 0; j < cols; j++)
                 {
-                    if (array[i, j] == 3)
+                    if (array[i, j] == testShipIndex)
                     {
-                        array[i, j] = 1;
+                        array[i, j] = shipIndex;
                     }
                 }
             }
@@ -212,7 +219,7 @@ namespace Sea_battle
             {
                 for (int j = 0; j < decks; j++)
                 {
-                    map[startX, startY] = 3;
+                    map[startX, startY] = testShipIndex;
                     startX = startX + step;
                 }
             }
@@ -226,7 +233,7 @@ namespace Sea_battle
             {
                 for (int j = 0; j < decks; j++)
                 {
-                    map[startX, startY] = 3;
+                    map[startX, startY] = testShipIndex;
                     startY = startY + step;
                 }
             }

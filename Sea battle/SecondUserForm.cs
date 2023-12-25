@@ -22,10 +22,5 @@ namespace Sea_battle
             Map.Display(mapSize, cellSize, userMap, enemyMap, this.Controls, player, enemyPLayer, label2);
             label2.Text = player.destroyedShips.ToString();
         }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

@@ -13,6 +13,15 @@ namespace Sea_battle
 {
     internal class Map
     {
+
+        private static string alphabet = "ABCDEFGHIJ";
+        private static int[] numbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        public static readonly int numberOneDeckShip = 4;
+        public static readonly int numberTwoDecksShips = 3;
+        public static readonly int numberThreeDecksShips = 2;
+        public static readonly int numberFourDecksShips = 1;
+
+
         public static int[,] createMapArray(int mapSize)
         {
             int[,] Map = new int[mapSize, mapSize];
@@ -21,10 +30,10 @@ namespace Sea_battle
 
         public static int[,] generateShips(int[,] map, int cellSize, int delta, Control.ControlCollection control)
         {
-            int[,] shipMap = generateDecksShip(map,4,1);
-            shipMap = generateDecksShip(shipMap,3,2);
-            shipMap = generateDecksShip(shipMap, 2,3);
-            shipMap = generateDecksShip(shipMap, 1,4);
+            int[,] shipMap = generateDecksShip(map,4, numberFourDecksShips);
+            shipMap = generateDecksShip(shipMap,3, numberThreeDecksShips);
+            shipMap = generateDecksShip(shipMap, 2, numberTwoDecksShips);
+            shipMap = generateDecksShip(shipMap, 1, numberOneDeckShip);
 
             DisplayShips(shipMap, cellSize, control, delta);
             return shipMap;
@@ -69,12 +78,12 @@ namespace Sea_battle
 
         public static void DisplayShips(int[,] map, int cellSize, Control.ControlCollection control, int delta)
         {
-            int mapSize = 11;
+            int mapSize = map.GetLength(0);
             for (int i = 0; i < mapSize; i++)
             {
                 for (int j = 0; j < mapSize; j++)
                 {
-                    if (map[i,j] == 1)
+                    if (map[i,j] == ShipMatrix.shipIndex)
                     {
                         int buttonLicationX = j * cellSize;
                         int buttonLicationY = i * cellSize;
@@ -86,12 +95,13 @@ namespace Sea_battle
 
         public static void DisplayFields(int[,] map, int cellSize, Control.ControlCollection control, int delta)
         {
-            int mapSize = 11;
+            int mapSize = map.GetLength(0);
+
             for (int i = 0; i < mapSize; i++)
             {
                 for (int j = 0; j < mapSize; j++)
                 {
-                    if (map[i, j] == 4)
+                    if (map[i, j] == ShipMatrix.destroyedShipCornerIndex)
                     {
                         int buttonLicationX = j * cellSize;
                         int buttonLicationY = i * cellSize;
@@ -112,12 +122,12 @@ namespace Sea_battle
             }
         }
 
-        private static void PlayerShoot(object sender, EventArgs e, int[,] enemyMap, Player firstPlayer, Player secondPlayer, Control.ControlCollection control, Label label)
+        private static void Shoot(object sender, EventArgs e, int[,] enemyMap,int cellSize, Player firstPlayer, Player secondPlayer, Control.ControlCollection control, Label label)
         {
             Button pressedButton = sender as Button;
             if (firstPlayer.canShoot && firstPlayer.isPlayerTurn)
             {
-               bool hit = firstPlayer.Shoot(enemyMap, 30, pressedButton, control, label);
+               bool hit = firstPlayer.Shoot(enemyMap, cellSize, pressedButton, control, label);
 
                 if (!hit)
                 {
@@ -131,10 +141,6 @@ namespace Sea_battle
 
         public static void Display(int mapSize, int cellSize,int[,] userMap, int[,]enemyMap, Control.ControlCollection control, Player firstPlayer, Player enemyPlayer, Label label)
         {
-            string alphabet = "ABCDEFGHIJ";
-            int[] numbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-            int value = numbers[9];
-
             for (int i = 0; i < mapSize; i++)
             {
                 for (int j = 0; j < mapSize; j++)
@@ -181,7 +187,7 @@ namespace Sea_battle
                     }
                     else
                     {
-                        button.Click += new EventHandler((sender, e) => PlayerShoot(sender, e, enemyMap, firstPlayer, enemyPlayer, control, label));
+                        button.Click += new EventHandler((sender, e) => Shoot(sender, e, enemyMap, cellSize, firstPlayer, enemyPlayer, control, label));
                     }
                     control.Add(button);
                 }
@@ -191,10 +197,6 @@ namespace Sea_battle
 
         public static void createMaps(int mapSize,int cellSize, int[,] firstMap, int[,] secondMap, Control.ControlCollection control)
         {
-            string alphabet = "ABCDEFGHIJ";
-            int[] numbers = {0,1,2,3,4,5,6,7,8,9 };
-            int value = numbers[9];
-
             for (int i = 0; i < mapSize; i++)
             {
                 for (int j = 0; j < mapSize; j++)
@@ -206,7 +208,7 @@ namespace Sea_battle
                     button.BackColor = Color.White;
                     if (i == 0 && j == 0)
                     {
-                        firstMap[i, j] = 5;
+                        firstMap[i, j] = ShipMatrix.technicalFieldIndex;
                     }
                     if (i == 0 || j == 0)
                     {
@@ -214,12 +216,12 @@ namespace Sea_battle
                         if (i == 0 && j>0)
                         {
                             button.Text = alphabet[j - 1].ToString();
-                            firstMap[i, j] = 5;
+                            firstMap[i, j] = ShipMatrix.technicalFieldIndex;
                         }
                         if (j == 0 && i > 0)
                         {
                             button.Text = numbers[i-1].ToString();
-                            firstMap[i, j] = 5;
+                            firstMap[i, j] = ShipMatrix.technicalFieldIndex;
                         }
                     }
                     control.Add(button);
@@ -237,7 +239,7 @@ namespace Sea_battle
                     button.BackColor = Color.White;
                     if (i == 0 && j == 0)
                     {
-                        secondMap[i, j] = 5;
+                        secondMap[i, j] = ShipMatrix.technicalFieldIndex;
                     }
                     if (i == 0 || j == 0)
                     {
@@ -245,19 +247,19 @@ namespace Sea_battle
                         if (i == 0 && j > 0)
                         {
                             button.Text = alphabet[j - 1].ToString();
-                            secondMap[i, j] = 5;
+                            secondMap[i, j] = ShipMatrix.technicalFieldIndex;
                         }
                         if (j == 0 && i > 0)
                         {
                             button.Text = numbers[i - 1].ToString();
-                            secondMap[i, j] = 5;
+                            secondMap[i, j] = ShipMatrix.technicalFieldIndex;
                         }
                     }
                     control.Add(button);
                 }
             }
             generateShips(firstMap, cellSize, 0, control);
-            generateShips(secondMap, cellSize,350, control);
+            generateShips(secondMap, cellSize, 350, control);
         }
     }
 }

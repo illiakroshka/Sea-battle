@@ -17,7 +17,7 @@ namespace Sea_battle
         }
 
         public bool canShoot;
-        public bool isPlayerTurn;
+        public bool isPlayerTurn; 
         public int destroyedShips { get; private set; }
 
         public bool Shoot(int[,] map, int cellSize, Button pressedButton, Control.ControlCollection control, Label label)
@@ -29,12 +29,12 @@ namespace Sea_battle
             {
                 delta = 350;
             }
-            if (map[pressedButton.Location.Y / cellSize, (pressedButton.Location.X - delta) / cellSize] == 1)
+            if (map[pressedButton.Location.Y / cellSize, (pressedButton.Location.X - delta) / cellSize] == ShipMatrix.shipIndex)
             {
                 hit = true;
                 pressedButton.BackColor = Color.Blue;
                 pressedButton.Text = "X";
-                map[pressedButton.Location.Y / cellSize, (pressedButton.Location.X - delta) / cellSize] = 3;
+                map[pressedButton.Location.Y / cellSize, (pressedButton.Location.X - delta) / cellSize] = ShipMatrix.testShipIndex;
                 bool status= ShipMatrix.ValidateShip(map);
                 if (status)
                 {
