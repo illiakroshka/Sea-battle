@@ -46,7 +46,7 @@ namespace Sea_battle
 
                 if (isDrown)
                 {
-                    bool isValid = ShipMatrix.ValidateNewShip(map);
+                    bool isValid = ShipMatrix.ValidateShip(map);
                     if (isValid)
                     {
                         map = ShipMatrix.replaceTemporaryShipWithPermanent(map);
@@ -78,29 +78,46 @@ namespace Sea_battle
                     {
                         int buttonLicationX = j * cellSize;
                         int buttonLicationY = i * cellSize;
-                        DrawButton(control, new Point(buttonLicationX + delta, buttonLicationY));
+                        DrawButton(control, new Point(buttonLicationX + delta, buttonLicationY), Color.Red);
                     }
                 }
             }
         }
 
-        public static void DrawButton(Control.ControlCollection Control, Point pointLocation)
+        public static void DisplayFields(int[,] map, int cellSize, Control.ControlCollection control, int delta)
+        {
+            int mapSize = 11;
+            for (int i = 0; i < mapSize; i++)
+            {
+                for (int j = 0; j < mapSize; j++)
+                {
+                    if (map[i, j] == 4)
+                    {
+                        int buttonLicationX = j * cellSize;
+                        int buttonLicationY = i * cellSize;
+                        DrawButton(control, new Point(buttonLicationX + delta, buttonLicationY), Color.Black);
+                    }
+                }
+            }
+        }
+
+        public static void DrawButton(Control.ControlCollection Control, Point pointLocation, Color color)
         {
             foreach (Control control in Control)
             {
                 if (control is Button button && button.Bounds.Contains(pointLocation))
                 {
-                    button.BackColor = Color.Red;
+                    button.BackColor = color;
                 }
             }
         }
 
-        private static void PlayerShoot(object sender, EventArgs e, int[,] enemyMap, Player firstPlayer, Player secondPlayer)
+        private static void PlayerShoot(object sender, EventArgs e, int[,] enemyMap, Player firstPlayer, Player secondPlayer, Control.ControlCollection control, Label label)
         {
             Button pressedButton = sender as Button;
             if (firstPlayer.canShoot && firstPlayer.isPlayerTurn)
             {
-               bool hit = firstPlayer.Shoot(enemyMap, 30, pressedButton);
+               bool hit = firstPlayer.Shoot(enemyMap, 30, pressedButton, control, label);
 
                 if (!hit)
                 {
@@ -109,10 +126,10 @@ namespace Sea_battle
                     secondPlayer.canShoot = true;
                 }
             }
-
+            
         }
 
-        public static void Display(int mapSize, int cellSize,int[,] userMap, int[,]enemyMap, Control.ControlCollection control, Player firstPlayer, Player enemyPlayer)
+        public static void Display(int mapSize, int cellSize,int[,] userMap, int[,]enemyMap, Control.ControlCollection control, Player firstPlayer, Player enemyPlayer, Label label)
         {
             string alphabet = "ABCDEFGHIJ";
             int[] numbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -164,7 +181,7 @@ namespace Sea_battle
                     }
                     else
                     {
-                        button.Click += new EventHandler((sender, e) => PlayerShoot(sender, e, enemyMap, firstPlayer, enemyPlayer));
+                        button.Click += new EventHandler((sender, e) => PlayerShoot(sender, e, enemyMap, firstPlayer, enemyPlayer, control, label));
                     }
                     control.Add(button);
                 }
@@ -187,16 +204,22 @@ namespace Sea_battle
                     button.Location = new Point(j * cellSize, i * cellSize);
                     button.Size = new Size(cellSize, cellSize);
                     button.BackColor = Color.White;
+                    if (i == 0 && j == 0)
+                    {
+                        firstMap[i, j] = 5;
+                    }
                     if (i == 0 || j == 0)
                     {
                         button.BackColor = Color.Gray;
                         if (i == 0 && j>0)
                         {
                             button.Text = alphabet[j - 1].ToString();
+                            firstMap[i, j] = 5;
                         }
                         if (j == 0 && i > 0)
                         {
                             button.Text = numbers[i-1].ToString();
+                            firstMap[i, j] = 5;
                         }
                     }
                     control.Add(button);
@@ -212,16 +235,22 @@ namespace Sea_battle
                     button.Location = new Point(350 + j * cellSize, i * cellSize);
                     button.Size = new Size(cellSize, cellSize);
                     button.BackColor = Color.White;
+                    if (i == 0 && j == 0)
+                    {
+                        secondMap[i, j] = 5;
+                    }
                     if (i == 0 || j == 0)
                     {
                         button.BackColor = Color.Gray;
                         if (i == 0 && j > 0)
                         {
                             button.Text = alphabet[j - 1].ToString();
+                            secondMap[i, j] = 5;
                         }
                         if (j == 0 && i > 0)
                         {
                             button.Text = numbers[i - 1].ToString();
+                            secondMap[i, j] = 5;
                         }
                     }
                     control.Add(button);

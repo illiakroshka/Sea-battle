@@ -82,9 +82,9 @@ namespace Sea_battle
                         {
                             for (int y = j - 1; y <= j + 1; y++)
                             {
-                                if (x >= 0 && x < rows && y >= 0 && y < cols && map[x, y] != 1)
+                                if (x >= 0 && x < rows && y >= 0 && y < cols && map[x, y] != 1 && map[x, y] != 5)
                                 {
-                                    map[x, y] = 2;
+                                    map[x, y] = 2;                               
                                 }
                             }
                         }
@@ -94,7 +94,34 @@ namespace Sea_battle
             return map;
         }
 
-        public static bool ValidateNewShip(int[,] map)
+        public static int[,] TransformForBorder(int[,] map)
+        {
+            int rows = map.GetLength(0);
+            int cols = map.GetLength(1);
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < cols; j++)
+                {
+                    if (map[i, j] == 3)
+                    {
+                        for (int x = i - 1; x <= i + 1; x++)
+                        {
+                            for (int y = j - 1; y <= j + 1; y++)
+                            {
+                                if (x >= 0 && x < rows && y >= 0 && y < cols && map[x, y] == 2)
+                                {
+                                    map[x, y] = 4;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return map;
+        }
+
+        public static bool ValidateShip(int[,] map)
         {
             int rows = map.GetLength(0);
             int cols = map.GetLength(1);

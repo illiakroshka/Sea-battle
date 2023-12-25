@@ -17,9 +17,14 @@ namespace Sea_battle
             InitializeComponent();
         }
 
-        public void ShowMaps(int[,]userMap, int[,] enemyMap, int mapSize, int cellSize, Player player, Player enemyPlayer)
+        public void ShowMaps(int[,] userMap, int[,] enemyMap, int mapSize, int cellSize, Player player, Player enemyPlayer)
         {
-            Map.Display(mapSize, cellSize, userMap, enemyMap, this.Controls, player, enemyPlayer);
+            Map.Display(mapSize, cellSize, userMap, enemyMap, this.Controls, player, enemyPlayer, label2);
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
