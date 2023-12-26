@@ -19,7 +19,7 @@ namespace Sea_battle
 
         public void ShowMaps(int[,] userMap, int[,] enemyMap, int mapSize, int cellSize, Player player, Player enemyPlayer)
         {
-            Map.Display(mapSize, cellSize, userMap, enemyMap, this.Controls, player, enemyPlayer, label2);
+            Map.Display(mapSize, cellSize, userMap, enemyMap, this.Controls, player, enemyPlayer, label2, player.weapon);
         }
     }
 }

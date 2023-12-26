@@ -11,9 +11,11 @@ namespace Sea_battle
             InitializeComponent();
 
             secondUserForm = new SecondUserForm();
-            firstUserForm = new FirstUserForm();    
+            firstUserForm = new FirstUserForm();
             firstMap = Map.createMapArray(mapSize);
             secondMap = Map.createMapArray(mapSize);
+            firstPlayer = new Player(true);
+            secondPlayer = new Player(false);
             createMaps();
         }
         Player firstPlayer;
@@ -24,7 +26,7 @@ namespace Sea_battle
         private int cellSize = 30;
         private int[,] firstMap;
         private int[,] secondMap;
-        private bool isPlaying = false;
+        IWeapon[] weapons = { new Bomb(), new DoubleBomb() };
 
 
         private void createMaps()
@@ -34,28 +36,31 @@ namespace Sea_battle
             Map.createMaps(mapSize, cellSize, firstMap, secondMap, this.Controls);
         }
 
-        private void Start(object sender, EventArgs e)
-        {
-            isPlaying = true;
-        }
-
-        private void ConfigureShips(object sender, EventArgs e)
-        {
-            Button pressedButton = sender as Button;
-            if (isPlaying)
-            {
-                pressedButton.BackColor = Color.Red;
-            }
-        }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            firstPlayer = new Player(true);
-            secondPlayer = new Player(false);
             firstUserForm.Show();
-            firstUserForm.ShowMaps(firstMap, secondMap,mapSize, cellSize, firstPlayer, secondPlayer);
+            firstUserForm.ShowMaps(firstMap, secondMap, mapSize, cellSize, firstPlayer, secondPlayer);
             secondUserForm.Show();
             secondUserForm.ShowMaps(secondMap, firstMap, mapSize, cellSize, secondPlayer, firstPlayer);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            firstPlayer.SetWeapon(weapons[0]);
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            firstPlayer.SetWeapon(weapons[1]);
+        }
+        private void button4_Click(object sender, EventArgs e)
+        {
+            secondPlayer.SetWeapon(weapons[0]);
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            secondPlayer.SetWeapon(weapons[1]);
         }
     }
 }

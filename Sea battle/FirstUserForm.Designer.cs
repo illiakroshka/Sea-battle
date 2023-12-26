@@ -66,5 +66,6 @@
 
         private Label label1;
         private Label label2;
+        //private MenuStrip menuStrip1;
     }
 }

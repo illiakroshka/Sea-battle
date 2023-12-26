@@ -28,14 +28,13 @@ namespace Sea_battle
             return Map;
         }
 
-        public static int[,] generateShips(int[,] map, int cellSize, int delta, Control.ControlCollection control)
+        public static int[,] generateShips(int[,] map)
         {
             int[,] shipMap = generateDecksShip(map,4, numberFourDecksShips);
             shipMap = generateDecksShip(shipMap,3, numberThreeDecksShips);
             shipMap = generateDecksShip(shipMap, 2, numberTwoDecksShips);
             shipMap = generateDecksShip(shipMap, 1, numberOneDeckShip);
 
-            DisplayShips(shipMap, cellSize, control, delta);
             return shipMap;
         }
 
@@ -122,12 +121,12 @@ namespace Sea_battle
             }
         }
 
-        private static void Shoot(object sender, EventArgs e, int[,] enemyMap,int cellSize, Player firstPlayer, Player secondPlayer, Control.ControlCollection control, Label label)
+        private static void Shoot(object sender, EventArgs e, int[,] enemyMap,int cellSize, Player firstPlayer, Player secondPlayer, Control.ControlCollection control, Label label, IWeapon weapon)
         {
             Button pressedButton = sender as Button;
             if (firstPlayer.canShoot && firstPlayer.isPlayerTurn)
             {
-               bool hit = firstPlayer.Shoot(enemyMap, cellSize, pressedButton, control, label);
+                bool hit = firstPlayer.ShootWeapon(enemyMap, cellSize, pressedButton, control, label, weapon);
 
                 if (!hit)
                 {
@@ -139,7 +138,7 @@ namespace Sea_battle
             
         }
 
-        public static void Display(int mapSize, int cellSize,int[,] userMap, int[,]enemyMap, Control.ControlCollection control, Player firstPlayer, Player enemyPlayer, Label label)
+        public static void Display(int mapSize, int cellSize,int[,] userMap, int[,]enemyMap, Control.ControlCollection control, Player firstPlayer, Player enemyPlayer, Label label, IWeapon weapon)
         {
             for (int i = 0; i < mapSize; i++)
             {
@@ -187,7 +186,7 @@ namespace Sea_battle
                     }
                     else
                     {
-                        button.Click += new EventHandler((sender, e) => Shoot(sender, e, enemyMap, cellSize, firstPlayer, enemyPlayer, control, label));
+                        button.Click += new EventHandler((sender, e) => Shoot(sender, e, enemyMap, cellSize, firstPlayer, enemyPlayer, control, label, weapon));
                     }
                     control.Add(button);
                 }
@@ -202,29 +201,21 @@ namespace Sea_battle
                 for (int j = 0; j < mapSize; j++)
                 {
                     firstMap[i, j] = 0;
-                    Button button = new Button();
-                    button.Location = new Point(j * cellSize, i * cellSize);
-                    button.Size = new Size(cellSize, cellSize);
-                    button.BackColor = Color.White;
                     if (i == 0 && j == 0)
                     {
                         firstMap[i, j] = ShipMatrix.technicalFieldIndex;
                     }
                     if (i == 0 || j == 0)
                     {
-                        button.BackColor = Color.Gray;
                         if (i == 0 && j>0)
                         {
-                            button.Text = alphabet[j - 1].ToString();
                             firstMap[i, j] = ShipMatrix.technicalFieldIndex;
                         }
                         if (j == 0 && i > 0)
                         {
-                            button.Text = numbers[i-1].ToString();
                             firstMap[i, j] = ShipMatrix.technicalFieldIndex;
                         }
                     }
-                    control.Add(button);
                 }
             }
 
@@ -233,33 +224,25 @@ namespace Sea_battle
                 for (int j = 0; j < mapSize; j++)
                 {
                     secondMap[i, j] = 0;
-                    Button button = new Button();
-                    button.Location = new Point(350 + j * cellSize, i * cellSize);
-                    button.Size = new Size(cellSize, cellSize);
-                    button.BackColor = Color.White;
                     if (i == 0 && j == 0)
                     {
                         secondMap[i, j] = ShipMatrix.technicalFieldIndex;
                     }
                     if (i == 0 || j == 0)
                     {
-                        button.BackColor = Color.Gray;
                         if (i == 0 && j > 0)
                         {
-                            button.Text = alphabet[j - 1].ToString();
                             secondMap[i, j] = ShipMatrix.technicalFieldIndex;
                         }
                         if (j == 0 && i > 0)
                         {
-                            button.Text = numbers[i - 1].ToString();
                             secondMap[i, j] = ShipMatrix.technicalFieldIndex;
                         }
                     }
-                    control.Add(button);
                 }
             }
-            generateShips(firstMap, cellSize, 0, control);
-            generateShips(secondMap, cellSize, 350, control);
+            generateShips(firstMap);
+            generateShips(secondMap);
         }
     }
 }
